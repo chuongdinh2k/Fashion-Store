@@ -18,7 +18,7 @@ import { DELETE_REVIEW_RESET } from "../../constants/productConstants";
 
 const ProductReviews = ({ history }) => {
     const dispatch = useDispatch();
-
+    const {token} = useSelector((state)=>state.user);
     const alert = useAlert();
 
     const { error: deleteError, isDeleted } = useSelector(
@@ -32,7 +32,7 @@ const ProductReviews = ({ history }) => {
     const [productId, setProductId] = useState("");
 
     const deleteReviewHandler = (reviewId) => {
-        dispatch(deleteReviews(reviewId, productId));
+        dispatch(deleteReviews(reviewId, productId,token));
     };
 
     const productReviewsSubmitHandler = (e) => {

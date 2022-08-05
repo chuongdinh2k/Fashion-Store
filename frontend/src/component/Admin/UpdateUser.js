@@ -16,9 +16,10 @@ import {
 import Loader from "../layout/Loader/Loader";
 
 const UpdateUser = ({ history, match }) => {
+    const {token} = useSelector((state)=>state.user);
     const dispatch = useDispatch();
     const alert = useAlert();
-
+    // component state 
     const { loading, error, user } = useSelector((state) => state.userDetails);
 
     const {
@@ -35,7 +36,7 @@ const UpdateUser = ({ history, match }) => {
 
     useEffect(() => {
         if (user && user._id !== userId) {
-            dispatch(getUserDetails(userId));
+            dispatch(getUserDetails(userId,token));
         } else {
             setName(user.name);
             setEmail(user.email);
@@ -67,7 +68,7 @@ const UpdateUser = ({ history, match }) => {
         myForm.set("email", email);
         myForm.set("role", role);
 
-        dispatch(updateUser(userId, myForm));
+        dispatch(updateUser(userId, myForm,token));
     };
 
     return (

@@ -11,6 +11,7 @@ import { getAllOrders } from "../../actions/orderAction";
 import { getAllUsers } from "../../actions/userAction";
 
 const Dashboard = () => {
+    const {token} = useSelector((state)=>state.user);
     const dispatch = useDispatch();
 
     const { products } = useSelector((state) => state.products);
@@ -27,11 +28,14 @@ const Dashboard = () => {
         });
 
     useEffect(() => {
-        dispatch(getAdminProduct());
-        dispatch(getAllOrders());
-        dispatch(getAllUsers());
-    }, [dispatch]);
-
+        dispatch(getAdminProduct(token));
+    }, [token]);
+    useEffect(()=>{
+        dispatch(getAllOrders(token));
+    },[token]);
+    useEffect(()=>{
+        dispatch(getAllUsers(token));
+    },[token]);
     let totalAmount = 0;
     orders &&
         orders.forEach((item) => {
@@ -56,7 +60,7 @@ const Dashboard = () => {
             {
                 backgroundColor: ["#00A6B4", "#6800B4"],
                 hoverBackgroundColor: ["#4B5000", "#35014F"],
-                data: [outOfStock, products.length - outOfStock],
+                data: [outOfStock, products?.length - outOfStock],
             },
         ],
     };

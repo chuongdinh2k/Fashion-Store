@@ -11,6 +11,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 const UpdatePassword = ({ history }) => {
+    const {token} = useSelector((state)=>state.user);
     const dispatch = useDispatch();
     const alert = useAlert();
 
@@ -29,7 +30,7 @@ const UpdatePassword = ({ history }) => {
         myForm.set("newPassword", newPassword);
         myForm.set("confirmPassword", confirmPassword);
 
-        dispatch(updatePassword(myForm));
+        dispatch(updatePassword(myForm,token));
     };
 
     useEffect(() => {

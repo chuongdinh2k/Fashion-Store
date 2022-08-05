@@ -17,6 +17,7 @@ import { UPDATE_ORDER_RESET } from "../../constants/orderConstants";
 import "./processOrder.css";
 
 const ProcessOrder = ({ history, match }) => {
+    const {token} = useSelector((state)=>state.user);
     const { order, error, loading } = useSelector((state) => state.orderDetails);
     const { error: updateError, isUpdated } = useSelector((state) => state.order);
 
@@ -49,7 +50,7 @@ const ProcessOrder = ({ history, match }) => {
             dispatch({ type: UPDATE_ORDER_RESET });
         }
 
-        dispatch(getOrderDetails(match.params.id));
+        dispatch(getOrderDetails(match.params.id,token));
     }, [dispatch, alert, error, match.params.id, isUpdated, updateError]);
 
     return (

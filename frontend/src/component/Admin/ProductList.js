@@ -17,6 +17,7 @@ import SideBar from "./Sidebar";
 import { DELETE_PRODUCT_RESET } from "../../constants/productConstants";
 
 const ProductList = ({ history }) => {
+    const {token} = useSelector((state)=>state.user);
     const dispatch = useDispatch();
 
     const alert = useAlert();
@@ -30,7 +31,7 @@ const ProductList = ({ history }) => {
     const deleteProductHandler = (id) => {
         dispatch(deleteProduct(id));
     };
-
+    
     useEffect(() => {
         if (error) {
             alert.error(error);
@@ -48,9 +49,11 @@ const ProductList = ({ history }) => {
             dispatch({ type: DELETE_PRODUCT_RESET });
         }
 
-        dispatch(getAdminProduct());
+       
     }, [dispatch, alert, error, deleteError, history, isDeleted]);
-
+    useEffect(()=>{
+        dispatch(getAdminProduct(token));
+    },[]);
     const columns = [
         { field: "id", headerName: "ID", minWidth: 100, flex: 0.5 },
 

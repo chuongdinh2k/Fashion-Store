@@ -17,6 +17,9 @@ import {
 import { DELETE_ORDER_RESET } from "../../constants/orderConstants";
 
 const OrderList = ({ history }) => {
+    const {token} = useSelector((state)=>state.user);
+    // component state
+    const [reload,setReload] = React.useState(false);
     const dispatch = useDispatch();
 
     const alert = useAlert();
@@ -26,7 +29,7 @@ const OrderList = ({ history }) => {
     const { error: deleteError, isDeleted } = useSelector((state) => state.order);
 
     const deleteOrderHandler = (id) => {
-        dispatch(deleteOrder(id));
+        dispatch(deleteOrder(id,token));
     };
 
     useEffect(() => {
@@ -44,11 +47,12 @@ const OrderList = ({ history }) => {
             alert.success("Đơn đặt hàng đã được xóa thành công");
             history.push("/admin/orders");
             dispatch({ type: DELETE_ORDER_RESET });
+            setReload(!reload);
         }
-
-        dispatch(getAllOrders());
     }, [dispatch, alert, error, deleteError, history, isDeleted]);
-
+    useEffect(() => {
+        dispatch(getAllOrders(token));
+    },[reload]);
     const columns = [
         { field: "id", headerName: "ID đặt hàng", minWidth: 300, flex: 0.7 },
 

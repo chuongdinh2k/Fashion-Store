@@ -14,6 +14,8 @@ import SideBar from "./Sidebar";
 import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
 
 const NewProduct = ({ history }) => {
+    const {token,user} = useSelector((state)=>state.user);
+    console.log(user);
     const dispatch = useDispatch();
     const alert = useAlert();
 
@@ -59,11 +61,12 @@ const NewProduct = ({ history }) => {
         myForm.set("description", description);
         myForm.set("category", category);
         myForm.set("Stock", Stock);
+        myForm.set("user", user);
 
         images.forEach((image) => {
             myForm.append("images", image);
         });
-        dispatch(createProduct(myForm));
+        dispatch(createProduct(myForm,token));
     };
 
     const createProductImagesChange = (e) => {

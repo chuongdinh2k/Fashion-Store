@@ -10,7 +10,7 @@ import { useAlert } from "react-alert";
 
 const OrderDetails = ({ match }) => {
   const { order, error, loading } = useSelector((state) => state.orderDetails);
-
+  const {token} = useSelector((state)=>state.user);
   const dispatch = useDispatch();
   const alert = useAlert();
 
@@ -20,7 +20,7 @@ const OrderDetails = ({ match }) => {
       dispatch(clearErrors());
     }
 
-    dispatch(getOrderDetails(match.params.id));
+    dispatch(getOrderDetails(match.params.id,token));
   }, [dispatch, alert, error, match.params.id]);
   return (
     <Fragment>

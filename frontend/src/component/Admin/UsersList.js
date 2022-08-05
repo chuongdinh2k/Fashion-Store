@@ -13,6 +13,9 @@ import { getAllUsers, clearErrors, deleteUser } from "../../actions/userAction";
 import { DELETE_USER_RESET } from "../../constants/userConstants";
 
 const UsersList = ({ history }) => {
+    const {token} = useSelector((state)=>state.user);
+    // component state
+    const [reload,setReload] = React.useState(false);
     const dispatch = useDispatch();
 
     const alert = useAlert();
@@ -26,7 +29,7 @@ const UsersList = ({ history }) => {
     } = useSelector((state) => state.profile);
 
     const deleteUserHandler = (id) => {
-        dispatch(deleteUser(id));
+        dispatch(deleteUser(id,token));
     };
 
     useEffect(() => {
@@ -44,11 +47,12 @@ const UsersList = ({ history }) => {
             alert.success(message);
             history.push("/admin/users");
             dispatch({ type: DELETE_USER_RESET });
+            setReload(!reload);
         }
-
-        dispatch(getAllUsers());
     }, [dispatch, alert, error, deleteError, history, isDeleted, message]);
-
+    React.useEffect(()=>{
+        dispatch(getAllUsers(token));
+    },[reload]);
     const columns = [
         { field: "id", headerName: "ID người dùng", minWidth: 180, flex: 0.6 },
 

@@ -13,10 +13,11 @@ const LoginSignUp = ({ history, location }) => {
     const dispatch = useDispatch();
     const alert = useAlert();
 
-    const { error, loading, isAuthenticated } = useSelector(
+    const { error, loading, isAuthenticated,user } = useSelector(
         (state) => state.user
     );
-
+    console.log(user);
+    console.log(isAuthenticated);
     const loginTab = useRef(null);
     const registerTab = useRef(null);
     const switcherTab = useRef(null);
@@ -24,13 +25,13 @@ const LoginSignUp = ({ history, location }) => {
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
 
-    const [user, setUser] = useState({
+    const [userInfo, setUserInfo] = useState({
         name: "",
         email: "",
         password: "",
     });
 
-    const { name, email, password } = user;
+    const { name, email, password } = userInfo;
 
     const [avatar, setAvatar] = useState("/Profile.png");
     const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
@@ -65,7 +66,7 @@ const LoginSignUp = ({ history, location }) => {
 
             reader.readAsDataURL(e.target.files[0]);
         } else {
-            setUser({ ...user, [e.target.name]: e.target.value });
+            setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
         }
     };
 
@@ -76,11 +77,14 @@ const LoginSignUp = ({ history, location }) => {
             alert.error(error);
             dispatch(clearErrors());
         }
-
+        if(user?.role==="admin"){
+            history.push('/admin/dashboard');
+            return;
+        }
         if (isAuthenticated) {
             history.push(redirect);
         }
-    }, [dispatch, error, alert, history, isAuthenticated, redirect]);
+    }, [dispatch, isAuthenticated]);
 
     const switchTabs = (e, tab) => {
         if (tab === "login") {

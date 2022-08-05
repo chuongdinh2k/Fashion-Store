@@ -2,6 +2,8 @@ const app = require("./app");
 const cloudinary = require("cloudinary");
 const dotenv = require("dotenv");
 const connectDatabase = require("./config/database");
+const cors = require('cors');
+
 
 //Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
@@ -23,7 +25,7 @@ cloudinary.config({
 });
 
 
-const server = app.listen(process.env.PORT || 4000, () => {
+const server = app.listen(process.env.PORT || 8080, () => {
     console.log("Backend server is running!");
 });
 
