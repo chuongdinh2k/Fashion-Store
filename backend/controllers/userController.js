@@ -5,8 +5,7 @@ const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
-const jwt = require("jsonwebtoken");;
-
+const jwt = require("jsonwebtoken");
 
 //Register a user
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -28,7 +27,21 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     },
   });
 
-  sendToken(user, 201, res);
+  const token = jwt.sign(
+    {
+      _id: user._id,
+      username: user.name,
+      role: user.role,
+      email: user.email,
+      avatar: user.avatar,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+  res.json({
+    user,
+    token,
+  });
 });
 
 //Login User

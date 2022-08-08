@@ -3,19 +3,18 @@ import { useSelector } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
 
 const ProtectedRoute = ({ isAdmin, component: Component, ...rest }) => {
-    const { loading, isAuthenticated, user } = useSelector((state) => state.user);
-
+    const { loading, isAuthenticated, user,token } = useSelector((state) => state.user);
     return (
         <Fragment>
             {loading === false && (
                 <Route
                     {...rest}
                     render={(props) => {
-                        if (isAuthenticated === false) {
+                        if (isAuthenticated === false && !token) {
                             return <Redirect to="/login" />;
                         }
 
-                        if (isAdmin === true && user.role !== "admin") {
+                        if (isAdmin === true && user.role !== "admin" && !token) {
                             return <Redirect to="/login" />;
                         }
 

@@ -73,18 +73,25 @@ const LoginSignUp = ({ history, location }) => {
     const redirect = location.search ? location.search.split("=")[1] : "/account";
 
     useEffect(() => {
+        console.log(user?.token);
         if (error) {
             alert.error(error);
             dispatch(clearErrors());
         }
-        if(user?.role==="admin"){
-            history.push('/admin/dashboard');
-            return;
+        if(user?.token){
+            if(user?.role==="admin"){
+                history.push('/admin/dashboard');
+                return;
+            }
+            else{
+                history.push('/admin/home');
+                return;
+            }
         }
         if (isAuthenticated) {
             history.push(redirect);
         }
-    }, [dispatch, isAuthenticated]);
+    }, [dispatch, isAuthenticated,error]);
 
     const switchTabs = (e, tab) => {
         if (tab === "login") {

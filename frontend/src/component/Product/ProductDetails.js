@@ -23,6 +23,7 @@ import { Rating } from "@material-ui/lab";
 import { NEW_REVIEW_RESET } from "../../constants/productConstants";
 
 const ProductDetails = ({ match }) => {
+    const {token} = useSelector((state)=>state.user);
     const dispatch = useDispatch();
     const alert = useAlert();
 
@@ -76,7 +77,7 @@ const ProductDetails = ({ match }) => {
         myForm.set("comment", comment);
         myForm.set("productId", match.params.id);
 
-        dispatch(newReview(myForm));
+        dispatch(newReview(myForm,token));
 
         setOpen(false);
     };

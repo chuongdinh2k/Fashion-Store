@@ -5,8 +5,8 @@ import { newProductReducer, newReviewReducer, productDetailsReducer, productRedu
 import { allUsersReducer, forgotPasswordReducer, profileReducer, userDetailsReducer, userReducer } from "./reducers/userReducer"
 import { cartReducer } from "./reducers/cartReducer";
 import { allOrdersReducer, myOrdersReducer, newOrderReducer, orderDetailsReducer, orderReducer } from "./reducers/orderReducer";
-
-
+import storage from "redux-persist/lib/storage";
+import { persistStore, persistReducer } from "redux-persist";
 
 const reducer = combineReducers({
   products: productsReducer,
@@ -42,11 +42,15 @@ let initialState = {
 };
 
 const middleware = [thunk];
-
+const persistConfig = {
+  key: "root",
+  storage,
+};
+const persistedReducer = persistReducer(persistConfig, reducer);
 const store = createStore(
-  reducer,
-  initialState,
+  persistedReducer,
+  // initialState,
   composeWithDevTools(applyMiddleware(...middleware))
 );
-
+export const persistor = persistStore(store);
 export default store;
