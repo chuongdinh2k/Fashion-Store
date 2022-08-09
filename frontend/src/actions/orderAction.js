@@ -23,13 +23,14 @@ import {
 import axios from "axios";
 
 // Create Order
-export const createOrder = (order) => async (dispatch) => {
+export const createOrder = (order, token) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_ORDER_REQUEST });
 
     const config = {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     };
     const { data } = await axios.post(
@@ -115,12 +116,13 @@ export const updateOrder = (id, order) => async (dispatch) => {
 };
 
 // Delete Order
-export const deleteOrder = (id,token) => async (dispatch) => {
+export const deleteOrder = (id, token) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_ORDER_REQUEST });
 
     const { data } = await axios.delete(
-      `${process.env.REACT_APP_API_KEY}/api/v1/admin/order/${id}`,{
+      `${process.env.REACT_APP_API_KEY}/api/v1/admin/order/${id}`,
+      {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
@@ -135,12 +137,13 @@ export const deleteOrder = (id,token) => async (dispatch) => {
 };
 
 // Get Order Details
-export const getOrderDetails = (id,token) => async (dispatch) => {
+export const getOrderDetails = (id, token) => async (dispatch) => {
   try {
     dispatch({ type: ORDER_DETAILS_REQUEST });
 
     const { data } = await axios.get(
-      `${process.env.REACT_APP_API_KEY}/api/v1/order/${id}`,{
+      `${process.env.REACT_APP_API_KEY}/api/v1/order/${id}`,
+      {
         headers: { Authorization: `Bearer ${token}` },
       }
     );

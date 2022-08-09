@@ -16,7 +16,7 @@ import ForgotPassword from "./component/User/ForgotPassword";
 import ResetPassword from "./component/User/ResetPassword";
 import store from "./store";
 import { loadUser } from "./actions/userAction";
-import UserOptions from "./component/layout/Header/UserOptions"
+import UserOptions from "./component/layout/Header/UserOptions";
 import { useSelector } from "react-redux";
 import ProtectedRoute from "./component/Route/ProductedRoute";
 import Cart from "./component/Cart/Cart";
@@ -43,14 +43,16 @@ import Contact from "./component/layout/Contact/Contact";
 import About from "./component/layout/About/About";
 import NotFound from "./component/layout/Not Found/NotFound";
 
-
-
 function App() {
-
-  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { isAuthenticated, user, token } = useSelector((state) => state.user);
   const [stripeApiKey, setStripeApiKey] = useState("");
   async function getStripeApiKey() {
-    const { data } = await axios.get("/api/v1/stripeapikey");
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_API_KEY}/api/v1/stripeapikey`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     setStripeApiKey(data.stripeApiKey);
   }
@@ -64,8 +66,7 @@ function App() {
     store.dispatch(loadUser());
     getStripeApiKey();
   }, []);
-
-
+  console.log(stripeApiKey);
   return (
     <Router>
       <Header />
@@ -86,7 +87,11 @@ function App() {
         <Route exact path="/about" component={About} />
         <ProtectedRoute exact path="/account" component={Profile} />
         <ProtectedRoute exact path="/me/update" component={UpdateProfile} />
-        <ProtectedRoute exact path="/password/update" component={UpdatePassword} />
+        <ProtectedRoute
+          exact
+          path="/password/update"
+          component={UpdatePassword}
+        />
         <Route exact path="/password/forgot" component={ForgotPassword} />
         <Route exact path="/password/reset/:token" component={ResetPassword} />
         <Route exact path="/login" component={LoginSignUp} />
@@ -97,21 +102,66 @@ function App() {
         <ProtectedRoute exact path="/orders" component={MyOrders} />
         <ProtectedRoute exact path="/order/:id" component={OrderDetails} />
 
-        <ProtectedRoute isAdmin={true} exact path="/admin/dashboard" component={Dashboard} />
-        <ProtectedRoute isAdmin={true} exact path="/admin/products" component={ProductList} />
-        <ProtectedRoute isAdmin={true} exact path="/admin/product" component={NewProduct} />
-        <ProtectedRoute isAdmin={true} exact path="/admin/product/:id" component={UpdateProduct} />
-        <ProtectedRoute isAdmin={true} exact path="/admin/orders" component={OrderList} />
-        <ProtectedRoute isAdmin={true} path="/admin/order/:id" component={ProcessOrder} />
-        <ProtectedRoute isAdmin={true} path="/admin/users" component={UsersList} />
-        <ProtectedRoute isAdmin={true} path="/admin/user/:id" component={UpdateUser} />
-        <ProtectedRoute isAdmin={true} path="/reviews" component={ProductReviews} />
+        <ProtectedRoute
+          isAdmin={true}
+          exact
+          path="/admin/dashboard"
+          component={Dashboard}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          exact
+          path="/admin/products"
+          component={ProductList}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          exact
+          path="/admin/product"
+          component={NewProduct}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          exact
+          path="/admin/product/:id"
+          component={UpdateProduct}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          exact
+          path="/admin/orders"
+          component={OrderList}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          path="/admin/order/:id"
+          component={ProcessOrder}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          path="/admin/users"
+          component={UsersList}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          path="/admin/user/:id"
+          component={UpdateUser}
+        />
+        <ProtectedRoute
+          isAdmin={true}
+          path="/reviews"
+          component={ProductReviews}
+        />
 
-        <Route component={window.location.pathname === "/process/payment" ? null : NotFound} />
+        <Route
+          component={
+            window.location.pathname === "/process/payment" ? null : NotFound
+          }
+        />
       </Switch>
       <Footer />
     </Router>
-  )
-};
+  );
+}
 
 export default App;

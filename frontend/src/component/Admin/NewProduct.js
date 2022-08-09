@@ -14,174 +14,168 @@ import SideBar from "./Sidebar";
 import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
 
 const NewProduct = ({ history }) => {
-    const {token,user} = useSelector((state)=>state.user);
-    console.log(user);
-    const dispatch = useDispatch();
-    const alert = useAlert();
+  const { token, user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const alert = useAlert();
 
-    const { loading, error, success } = useSelector((state) => state.newProduct);
+  const { loading, error, success } = useSelector((state) => state.newProduct);
 
-    const [name, setName] = useState("");
-    const [price, setPrice] = useState(0);
-    const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("");
-    const [Stock, setStock] = useState(0);
-    const [images, setImages] = useState([]);
-    const [imagesPreview, setImagesPreview] = useState([]);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [Stock, setStock] = useState(0);
+  const [images, setImages] = useState([]);
+  const [imagesPreview, setImagesPreview] = useState([]);
 
-    const categories = [
-        "Quần",
-        "Áo",
-        "Váy",
-        "Giầy",
-        "Dép",
-        "Mũ",
-    ];
+  const categories = ["Quần", "Áo", "Váy", "Giầy", "Dép", "Mũ"];
 
-    useEffect(() => {
-        if (error) {
-            alert.error(error);
-            dispatch(clearErrors());
+  useEffect(() => {
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
+
+    if (success) {
+      alert.success("Sản phẩm vừa được tạo thành công");
+      history.push("/admin/dashboard");
+      dispatch({ type: NEW_PRODUCT_RESET });
+    }
+  }, [dispatch, alert, error, history, success]);
+
+  const createProductSubmitHandler = (e) => {
+    e.preventDefault();
+
+    const myForm = new FormData();
+
+    myForm.set("name", name);
+    myForm.set("price", price);
+    myForm.set("description", description);
+    myForm.set("category", category);
+    myForm.set("Stock", Stock);
+    myForm.set("user", user);
+
+    images.forEach((image) => {
+      myForm.append("images", image);
+    });
+    dispatch(createProduct(myForm, token));
+  };
+
+  const createProductImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    setImages([]);
+    setImagesPreview([]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImagesPreview((old) => [...old, reader.result]);
+          setImages((old) => [...old, reader.result]);
         }
+      };
 
-        if (success) {
-            alert.success("Sản phẩm vừa được tạo thành công");
-            history.push("/admin/dashboard");
-            dispatch({ type: NEW_PRODUCT_RESET });
-        }
-    }, [dispatch, alert, error, history, success]);
+      reader.readAsDataURL(file);
+    });
+  };
 
-    const createProductSubmitHandler = (e) => {
-        e.preventDefault();
+  return (
+    <Fragment>
+      <MetaData title="Tạo sản phẩm" />
+      <div className="dashboard">
+        <SideBar />
+        <div className="newProductContainer">
+          <form
+            className="createProductForm"
+            encType="multipart/form-data"
+            onSubmit={createProductSubmitHandler}
+          >
+            <h1>Tạo sản phẩm</h1>
 
-        const myForm = new FormData();
-
-        myForm.set("name", name);
-        myForm.set("price", price);
-        myForm.set("description", description);
-        myForm.set("category", category);
-        myForm.set("Stock", Stock);
-        myForm.set("user", user);
-
-        images.forEach((image) => {
-            myForm.append("images", image);
-        });
-        dispatch(createProduct(myForm,token));
-    };
-
-    const createProductImagesChange = (e) => {
-        const files = Array.from(e.target.files);
-
-        setImages([]);
-        setImagesPreview([]);
-
-        files.forEach((file) => {
-            const reader = new FileReader();
-
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setImagesPreview((old) => [...old, reader.result]);
-                    setImages((old) => [...old, reader.result]);
-                }
-            };
-
-            reader.readAsDataURL(file);
-        });
-    };
-
-    return (
-        <Fragment>
-            <MetaData title="Tạo sản phẩm" />
-            <div className="dashboard">
-                <SideBar />
-                <div className="newProductContainer">
-                    <form
-                        className="createProductForm"
-                        encType="multipart/form-data"
-                        onSubmit={createProductSubmitHandler}
-                    >
-                        <h1>Tạo sản phẩm</h1>
-
-                        <div>
-                            <SpellcheckIcon />
-                            <input
-                                type="text"
-                                placeholder="Tên sản phẩm"
-                                required
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <AttachMoneyIcon />
-                            <input
-                                type="number"
-                                placeholder="Giá"
-                                required
-                                onChange={(e) => setPrice(e.target.value)}
-                            />
-                        </div>
-
-                        <div>
-                            <DescriptionIcon />
-
-                            <textarea
-                                placeholder="Mô tả sản phẩm"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                cols="30"
-                                rows="1"
-                            ></textarea>
-                        </div>
-
-                        <div>
-                            <AccountTreeIcon />
-                            <select onChange={(e) => setCategory(e.target.value)}>
-                                <option value="">Chọn danh mục</option>
-                                {categories.map((cate) => (
-                                    <option key={cate} value={cate}>
-                                        {cate}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div>
-                            <StorageIcon />
-                            <input
-                                type="number"
-                                placeholder="Số lượng sản phẩm"
-                                required
-                                onChange={(e) => setStock(e.target.value)}
-                            />
-                        </div>
-
-                        <div id="createProductFormFile">
-                            <input
-                                type="file"
-                                name="avatar"
-                                accept="image/*"
-                                onChange={createProductImagesChange}
-                                multiple
-                            />
-                        </div>
-
-                        <div id="createProductFormImage">
-                            {imagesPreview.map((image, index) => (
-                                <img key={index} src={image} alt="Xem trước sản phẩm" />
-                            ))}
-                        </div>
-
-                        <Button
-                            id="createProductBtn"
-                            type="submit"
-                            disabled={loading ? true : false}
-                        >Tạo</Button>
-                    </form>
-                </div>
+            <div>
+              <SpellcheckIcon />
+              <input
+                type="text"
+                placeholder="Tên sản phẩm"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
-        </Fragment>
-    );
+            <div>
+              <AttachMoneyIcon />
+              <input
+                type="number"
+                placeholder="Giá"
+                required
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <DescriptionIcon />
+
+              <textarea
+                placeholder="Mô tả sản phẩm"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                cols="30"
+                rows="1"
+              ></textarea>
+            </div>
+
+            <div>
+              <AccountTreeIcon />
+              <select onChange={(e) => setCategory(e.target.value)}>
+                <option value="">Chọn danh mục</option>
+                {categories.map((cate) => (
+                  <option key={cate} value={cate}>
+                    {cate}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <StorageIcon />
+              <input
+                type="number"
+                placeholder="Số lượng sản phẩm"
+                required
+                onChange={(e) => setStock(e.target.value)}
+              />
+            </div>
+
+            <div id="createProductFormFile">
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                onChange={createProductImagesChange}
+                multiple
+              />
+            </div>
+
+            <div id="createProductFormImage">
+              {imagesPreview.map((image, index) => (
+                <img key={index} src={image} alt="Xem trước sản phẩm" />
+              ))}
+            </div>
+
+            <Button
+              id="createProductBtn"
+              type="submit"
+              disabled={loading ? true : false}
+            >
+              Tạo
+            </Button>
+          </form>
+        </div>
+      </div>
+    </Fragment>
+  );
 };
 
 export default NewProduct;

@@ -40,7 +40,6 @@ import axios from "axios";
 
 // Login
 export const login = (email, password) => async (dispatch) => {
-  console.log(process.env.REACT_APP_API_KEY);
   try {
     dispatch({ type: LOGIN_REQUEST });
 
@@ -57,10 +56,8 @@ export const login = (email, password) => async (dispatch) => {
       { email, password },
       config
     );
-      console.log(data);
     dispatch({ type: LOGIN_SUCCESS, payload: data });
   } catch (error) {
-    console.log(error.response?.message);
     dispatch({ type: LOGIN_FAIL, payload: error.response?.data?.message });
   }
 };
@@ -80,7 +77,6 @@ export const register = (userData) => async (dispatch) => {
 
     dispatch({ type: REGISTER_USER_SUCCESS, payload: data });
   } catch (error) {
-    console.log(error.response?.data?.message);
     dispatch({
       type: REGISTER_USER_FAIL,
       payload: error.response?.data?.message,
@@ -137,11 +133,16 @@ export const updateProfile = (userData) => async (dispatch) => {
 };
 
 // Update Password
-export const updatePassword = (passwords,token) => async (dispatch) => {
+export const updatePassword = (passwords, token) => async (dispatch) => {
   try {
     dispatch({ type: UPDATE_PASSWORD_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json",Authorization: `Bearer ${token}` } };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     const { data } = await axios.put(
       `${process.env.REACT_APP_API_KEY}/api/v1/password/update`,
@@ -220,13 +221,13 @@ export const getAllUsers = (token) => async (dispatch) => {
 };
 
 // get  User Details
-export const getUserDetails = (id,token) => async (dispatch) => {
+export const getUserDetails = (id, token) => async (dispatch) => {
   try {
     dispatch({ type: USER_DETAILS_REQUEST });
     const { data } = await axios.get(
       `${process.env.REACT_APP_API_KEY}/api/v1/admin/user/${id}`,
       {
-        headers: { Authorization: `Bearer ${token}`}
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
 
@@ -264,13 +265,14 @@ export const updateUser = (id, userData, token) => async (dispatch) => {
 };
 
 // Delete User
-export const deleteUser = (id,token) => async (dispatch) => {
+export const deleteUser = (id, token) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_USER_REQUEST });
 
     const { data } = await axios.delete(
-      `${process.env.REACT_APP_API_KEY}/api/v1/admin/user/${id}`,{
-        headers: { Authorization: `Bearer ${token}`}
+      `${process.env.REACT_APP_API_KEY}/api/v1/admin/user/${id}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
 
