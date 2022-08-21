@@ -80,7 +80,7 @@ const LoginSignUp = ({ history, location }) => {
         history.push("/admin/dashboard");
         return;
       } else {
-        history.push("/admin/home");
+        history.push("/admin/home");  
         return;
       }
     }

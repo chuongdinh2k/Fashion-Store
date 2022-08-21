@@ -15,13 +15,14 @@ const UpdateProfile = ({ history }) => {
 
     const { user } = useSelector((state) => state.user);
     const { error, isUpdated, loading } = useSelector((state) => state.profile);
-
+    const { token } = useSelector((state) => state.user);   
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [avatar, setAvatar] = useState();
     const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
 
     const updateProfileSubmit = (e) => {
+
         e.preventDefault();
 
         const myForm = new FormData();
@@ -29,7 +30,7 @@ const UpdateProfile = ({ history }) => {
         myForm.set("name", name);
         myForm.set("email", email);
         myForm.set("avatar", avatar);
-        dispatch(updateProfile(myForm));
+        dispatch(updateProfile(myForm,token));
     };
 
     const updateProfileDataChange = (e) => {

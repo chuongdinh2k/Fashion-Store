@@ -16,7 +16,6 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   // next();
   const authHeader = req.header("Authorization");
   const token = authHeader && authHeader.split(" ")[1];
-  console.log(token);
   if (!token)
     return res
       .status(401)

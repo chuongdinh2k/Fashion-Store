@@ -99,7 +99,6 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
 //Forgot Password
 exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-
   if (!user) {
     return next(new ErrorHander("Người dùng không được tìm thấy", 404));
   }
@@ -120,7 +119,6 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
             Khôi phục mật khẩu`,
       message,
     });
-
     res.status(200).json({
       success: true,
       message: `Thư điện tử được gửi đến ${user.email} thành công`,
@@ -182,8 +180,8 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
 
 // update User password
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user.id).select("+password");
-
+  
+  const user = await User.findById(req.user._id).select("+password");
   const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
   if (!isPasswordMatched) {
@@ -209,10 +207,10 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
   };
 
   if (req.body.avatar !== "") {
-    const user = await User.findById(req.user.id);
-
+    const user = await User.findById(req.user._id);
+    console.log(user);
     const imageId = user.avatar.public_id;
-
+    console.log(imageId);
     await cloudinary.v2.uploader.destroy(imageId);
 
     const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
@@ -220,14 +218,14 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
       width: 150,
       crop: "scale",
     });
-
+    console.log(myCloud);
     newUserData.avatar = {
       public_id: myCloud.public_id,
       url: myCloud.secure_url,
     };
   }
 
-  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+  const user = await User.findByIdAndUpdate(req.user._id, newUserData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
